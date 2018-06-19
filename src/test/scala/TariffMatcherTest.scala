@@ -6,10 +6,10 @@ class TariffMatcherTest extends FlatSpec with Matchers {
     TariffMatcher.main(Array("cost", "2000", "2300"))
   }
   it should "return the amount of power used annually from a monthly spend" in {
-    TariffMatcher.main(Array("greener-energy", "power", "40"))
+    TariffMatcher.main(Array("usage", "greener-energy", "power", "40"))
   }
   it should "return the amount of gas used annually from a monthly spend" in {
-    TariffMatcher.main(Array("better-energy", "gas", "25"))
+    TariffMatcher.main(Array("usage", "better-energy", "gas", "25"))
   }
 
 
