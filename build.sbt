@@ -6,6 +6,8 @@ scalaVersion := "2.11.12"
 
 
 libraryDependencies ++= Seq(
+  // https://mvnrepository.com/artifact/com.typesafe.play/play-json
+  "com.typesafe.play" %% "play-json" % "2.6.9",
   // https://mvnrepository.com/artifact/org.scalatest/scalatest
   "org.scalatest" %% "scalatest" % "3.0.5" % Test
 )
