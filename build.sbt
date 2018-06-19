@@ -2,8 +2,7 @@ name := "ovo-exercise"
 
 version := "0.1"
 
-scalaVersion := "2.11.12"
-
+scalaVersion := "2.12.6"
 
 libraryDependencies ++= Seq(
   // https://mvnrepository.com/artifact/com.typesafe.play/play-json
