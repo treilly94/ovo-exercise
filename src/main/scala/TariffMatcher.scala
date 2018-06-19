@@ -6,7 +6,21 @@ import play.api.libs.json._
 
 object TariffMatcher {
   def main(args: Array[String]): Unit = {
+    // Read Tariffs from file
     val tariffs = readJson("./src/main/resources/copy_of_prices.json")
+    args.head match {
+      case "cost" => calculateCost // for each print
+      case "usage" => calculateUsage // for each print
+      // Errors
+    }
+  }
+
+  def calculateCost(): Map[String, Double] = {
+
+  }
+
+  def calculateUsage(): Double = {
+
   }
 
   def readJson(path: String): List[Tariff] = {
