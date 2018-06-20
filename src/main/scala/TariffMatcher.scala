@@ -16,6 +16,7 @@ object TariffMatcher {
   }
 
   def calculateCost(tariffs: List[Tariff], pUsage: Double, gUsage: Double): Map[String, String] = {
+    // TODO Remove the var
     var newTariffs = tariffs
     if (pUsage > 0.0) newTariffs = newTariffs.filter(t => t.RatePower.isDefined) // Remove tariffs that don't supply power when needed
     if (gUsage > 0.0) newTariffs = newTariffs.filter(t => t.RateGas.isDefined) // Remove tariffs that don't supply gas when needed
