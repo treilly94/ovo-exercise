@@ -9,14 +9,23 @@ object TariffMatcher {
     // Read Tariffs from file
     val tariffs = readJson("./src/main/resources/copy_of_prices.json")
     args.head match {
-      case "cost" => calculateCost // for each print
+      case "cost" => calculateCost(tariffs, args(1).toDouble, args(2).toDouble) // for each print
       case "usage" => println(calculateUsage(tariffs, args(1), args(2), args(3).toDouble))
       // Errors
     }
   }
 
-  def calculateCost(): Map[String, Double] = {
-    Map(""->1.2)
+  def calculateCost(tariffs: List[Tariff], pUsage: Double, gUsage: Double): Map[String, String] = {
+    tariffs
+      .filter(t => t.RatePower.isDefined && pUsage > 0) // Remove tariffs that don't supply power when needed
+      .filter(t => t.RateGas.isDefined && gUsage > 0) // Remove tariffs that don't supply gas when needed
+      .map(t =>
+        t.Name -> "%1.2f".format(     // Map names to two decimal place formatted numbers
+          (t.RatePower.get * pUsage) + (t.RateGas.get * gUsage) + (t.StandingCharge.getOrElse(0.0) * 12)
+        )
+    )
+      .sortBy(_._2) // Sort by the values
+      .toMap // Convert to a map
   }
 
   def calculateUsage(tariffs: List[Tariff], name: String, fuel: String, target: Double): String = {
@@ -25,8 +34,7 @@ object TariffMatcher {
     // Get price of fuel
     val fuelPrice: Double = if (fuel == "power") tariff.RatePower.get else tariff.RateGas.get
     // Calculate price and format output
-    "%1.2f".format(((target - tariff.StandingCharge.get) / fuelPrice) *12)
-
+    "%1.2f".format(((target - tariff.StandingCharge.get) / fuelPrice) * 12)
   }
 
   def readJson(path: String): List[Tariff] = {
@@ -50,6 +58,8 @@ object TariffMatcher {
     // Convert the json to a list of Tariffs
     json.validate[List[Tariff]].get
   }
+
+  val vat: Double = 0.05
 }
 
 case class Tariff(Name: String,
