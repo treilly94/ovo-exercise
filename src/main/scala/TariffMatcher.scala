@@ -16,12 +16,13 @@ object TariffMatcher {
   }
 
   def calculateCost(tariffs: List[Tariff], pUsage: Double, gUsage: Double): Map[String, String] = {
-    tariffs
-      .filter(t => t.RatePower.isDefined && pUsage > 0) // Remove tariffs that don't supply power when needed
-      .filter(t => t.RateGas.isDefined && gUsage > 0) // Remove tariffs that don't supply gas when needed
+    var newTariffs = tariffs
+    if (pUsage > 0.0) newTariffs = newTariffs.filter(t => t.RatePower.isDefined) // Remove tariffs that don't supply power when needed
+    if (gUsage > 0.0) newTariffs = newTariffs.filter(t => t.RateGas.isDefined) // Remove tariffs that don't supply gas when needed
+    newTariffs
       .map(t =>
         t.Name -> "%1.2f".format(     // Map names to two decimal place formatted numbers
-          (t.RatePower.get * pUsage) + (t.RateGas.get * gUsage) + (t.StandingCharge.getOrElse(0.0) * 12)
+          (t.RatePower.getOrElse(0.0) * pUsage) + (t.RateGas.getOrElse(0.0) * gUsage) + (t.StandingCharge.getOrElse(0.0) * 12)
         )
     )
       .sortBy(_._2) // Sort by the values
