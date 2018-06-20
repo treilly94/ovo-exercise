@@ -9,7 +9,7 @@ class TariffMatcherTest extends FlatSpec with Matchers {
     Tariff("simpler-energy", Some(0.1396), Some(0.0328), Some(8.75))
   )
 
-  "main" should "return the cost of gas and electricity in order" in {
+  "main" should "return the cost of gas and power in order" in {
     TariffMatcher.main(Array("cost", "2000", "2300"))
   }
   it should "return the amount of power used annually from a monthly spend" in {
@@ -19,11 +19,19 @@ class TariffMatcherTest extends FlatSpec with Matchers {
     TariffMatcher.main(Array("usage", "better-energy", "gas", "25"))
   }
 
-  "calculateCost" should "return the cost of gas and electricity in order" in {
+  "calculateCost" should "return the cost of gas and power in order" in {
     val output: Map[String, String] = TariffMatcher.calculateCost(testTariffs, 2000.0, 2300.0)
-    val expected: Map[String, String] = Map("better-energy" -> "439.60",
-      "2yr-fixed" -> "452.48",
-      "simpler-energy" -> "459.64")
+    val expected: Map[String, String] = Map("better-energy" -> "439.60", "2yr-fixed" -> "452.48", "simpler-energy" -> "459.64")
+    output should be(expected)
+  }
+  it should "return the cost of just power in order" in {
+    val output: Map[String, String] = TariffMatcher.calculateCost(testTariffs, 2000.0, 0.0)
+    val expected: Map[String, String] = Map("better-energy" -> "373.36", "simpler-energy" -> "384.20", "2yr-fixed" -> "384.40", "greener-energy" -> "408.76")
+    output should be(expected)
+  }
+  it should "return the cost of just gas in order" in {
+    val output: Map[String, String] = TariffMatcher.calculateCost(testTariffs, 0.0, 2000.0)
+    val expected: Map[String, String] = Map("better-energy" -> "157.56", "2yr-fixed" -> "164.20", "simpler-energy" -> "170.60")
     output should be(expected)
   }
 
