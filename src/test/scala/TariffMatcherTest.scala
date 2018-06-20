@@ -19,18 +19,26 @@ class TariffMatcherTest extends FlatSpec with Matchers {
     TariffMatcher.main(Array("usage", "better-energy", "gas", "25"))
   }
 
-  "calculateCost" should "return the amount of power used annually from a monthly spend" in {
+  "calculateCost" should "return the cost of gas and electricity in order" in {
+    val output: Map[String, String] = TariffMatcher.calculateCost(testTariffs, 2000.0, 2300.0)
+    val expected: Map[String, String] = Map("better-energy" -> "439.60",
+      "2yr-fixed" -> "452.48",
+      "simpler-energy" -> "459.64")
+    output should be(expected)
+  }
+
+  "calculateUsage" should "return the amount of power used annually from a monthly spend" in {
     val output: String = TariffMatcher.calculateUsage(testTariffs, "greener-energy", "power", 40.0)
-    output should be ("2461.40")
+    output should be("2461.40")
   }
   it should "return the amount of gas used annually from a monthly spend" in {
     val output: String = TariffMatcher.calculateUsage(testTariffs, "better-energy", "gas", 25.0)
-    output should be ("6945.83")
+    output should be("6945.83")
   }
 
   "readJson" should "return a list of Tariffs" in {
     val output: List[Tariff] = TariffMatcher.readJson("./src/test/resources/copy_of_prices.json")
-    output should be (testTariffs)
+    output should be(testTariffs)
   }
 
 }
