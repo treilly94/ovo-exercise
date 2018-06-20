@@ -10,16 +10,22 @@ object TariffMatcher {
     val tariffs = readJson("./src/main/resources/copy_of_prices.json")
     args.head match {
       case "cost" => calculateCost // for each print
-      case "usage" => calculateUsage // for each print
+      case "usage" => println(calculateUsage(tariffs, args(1), args(2), args(3).toDouble))
       // Errors
     }
   }
 
   def calculateCost(): Map[String, Double] = {
-
+    Map(""->1.2)
   }
 
-  def calculateUsage(): Double = {
+  def calculateUsage(tariffs: List[Tariff], name: String, fuel: String, target: Double): String = {
+    // Get tariff details
+    val tariff: Tariff = tariffs.filter(t => t.Name == name).head
+    // Get price of fuel
+    val fuelPrice: Double = if (fuel == "power") tariff.RatePower.get else tariff.RateGas.get
+    // Calculate price and format output
+    "%1.2f".format(((target - tariff.StandingCharge.get) / fuelPrice) *12)
 
   }
 
