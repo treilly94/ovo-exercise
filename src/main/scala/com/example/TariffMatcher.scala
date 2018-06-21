@@ -7,6 +7,7 @@ import play.api.libs.json._
 
 object TariffMatcher {
 
+  val vat: Double = 0.05
   val vatMultiplier: Double = 1.05
   val decimalPlaces: String = "%1.2f"
 
@@ -43,7 +44,7 @@ object TariffMatcher {
       case _ => throw new IllegalArgumentException("Fuel does not exist")
     }
     // Calculate price and format output
-    decimalPlaces.format((((target - tariff.StandingCharge.get) / fuelPrice) * 12) * vatMultiplier)
+    decimalPlaces.format((((target - target * vat) - tariff.StandingCharge.get) / fuelPrice) * 12)
   }
 
   /*

@@ -29,11 +29,11 @@ class TariffMatcherTest extends FlatSpec with Matchers {
 
   "calculateUsage" should "return the amount of power used annually from a monthly spend" in {
     val output: String = TariffMatcher.calculateUsage(testTariffs, "greener-energy", "power", 40.0)
-    output should be("2584.47")
+    output should be("2305.96")
   }
   it should "return the amount of gas used annually from a monthly spend" in {
     val output: String = TariffMatcher.calculateUsage(testTariffs, "better-energy", "gas", 25.0)
-    output should be("7293.13")
+    output should be("6425.00")
   }
 
   "readJson" should "return a list of Tariffs" in {
