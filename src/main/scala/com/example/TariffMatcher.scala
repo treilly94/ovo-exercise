@@ -80,8 +80,6 @@ object TariffMatcher {
     }
     // TODO Add in more error handling
     // Convert the json to a list of Tariffs
-    try {
-      json.validate[List[Tariff]].get
-    }
+    json.validate[List[Tariff]].get
   }
 }
