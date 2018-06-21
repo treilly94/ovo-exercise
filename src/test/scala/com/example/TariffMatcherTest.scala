@@ -13,27 +13,27 @@ class TariffMatcherTest extends FlatSpec with Matchers {
 
   "calculateCost" should "return the cost of gas and power in order" in {
     val output: Map[String, String] = TariffMatcher.calculateCost(testTariffs, 2000.0, 2300.0)
-    val expected: Map[String, String] = Map("better-energy" -> "439.60", "2yr-fixed" -> "452.48", "simpler-energy" -> "459.64")
+    val expected: Map[String, String] = Map("better-energy" -> "461.58", "2yr-fixed" -> "475.10", "simpler-energy" -> "482.62")
     output should be(expected)
   }
   it should "return the cost of just power in order" in {
     val output: Map[String, String] = TariffMatcher.calculateCost(testTariffs, 2000.0, 0.0)
-    val expected: Map[String, String] = Map("better-energy" -> "373.36", "simpler-energy" -> "384.20", "2yr-fixed" -> "384.40", "greener-energy" -> "408.76")
+    val expected: Map[String, String] = Map("better-energy" -> "392.03", "simpler-energy" -> "403.41", "2yr-fixed" -> "403.62", "greener-energy" -> "429.20")
     output should be(expected)
   }
   it should "return the cost of just gas in order" in {
     val output: Map[String, String] = TariffMatcher.calculateCost(testTariffs, 0.0, 2000.0)
-    val expected: Map[String, String] = Map("better-energy" -> "157.56", "2yr-fixed" -> "164.20", "simpler-energy" -> "170.60")
+    val expected: Map[String, String] = Map("better-energy" -> "165.44", "2yr-fixed" -> "172.41", "simpler-energy" -> "179.13")
     output should be(expected)
   }
 
   "calculateUsage" should "return the amount of power used annually from a monthly spend" in {
     val output: String = TariffMatcher.calculateUsage(testTariffs, "greener-energy", "power", 40.0)
-    output should be("2461.40")
+    output should be("2584.47")
   }
   it should "return the amount of gas used annually from a monthly spend" in {
     val output: String = TariffMatcher.calculateUsage(testTariffs, "better-energy", "gas", 25.0)
-    output should be("6945.83")
+    output should be("7293.13")
   }
 
   "readJson" should "return a list of Tariffs" in {
