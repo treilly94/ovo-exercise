@@ -15,16 +15,22 @@ object TariffMatcher {
       A method that calculates an annual cost inclusive of VAT for applicable tariffs, sorted by cheapest first.
    */
   def calculateCost(tariffs: List[Tariff], pUsage: Double, gUsage: Double): Map[String, String] = {
+    // Remove tariffs that don't supply power/gas when needed
     val newTariffs = (pUsage, gUsage) match {
       case (p, g) if p > 0.0 && g > 0.0 => tariffs.filter(t => t.RatePower.isDefined && t.RateGas.isDefined)
-      case (p, g) if p > 0.0 => tariffs.filter(t => t.RatePower.isDefined) // Remove tariffs that don't supply power when needed
-      case (p, g) if g > 0.0 => tariffs.filter(t => t.RateGas.isDefined) // Remove tariffs that don't supply gas when needed
+      case (p, g) if p > 0.0 => tariffs.filter(t => t.RatePower.isDefined)
+      case (p, g) if g > 0.0 => tariffs.filter(t => t.RateGas.isDefined)
       case _ => throw new IllegalArgumentException("pUsage and gUasge cant both be zero")
     }
+
     newTariffs
       .map(t =>
         t.Name -> decimalPlaces.format( // Map names to two decimal place formatted numbers
-          ((t.RatePower.getOrElse(0.0) * pUsage) + (t.RateGas.getOrElse(0.0) * gUsage) + (t.StandingCharge.getOrElse(0.0) * 12)) * vatMultiplier
+          (
+            (t.RatePower.getOrElse(0.0) * pUsage) +
+              (t.RateGas.getOrElse(0.0) * gUsage) +
+              (t.StandingCharge.getOrElse(0.0) * 12)
+            ) * vatMultiplier
         )
       )
       .sortBy(_._2) // Sort by the values
@@ -44,7 +50,9 @@ object TariffMatcher {
       case _ => throw new IllegalArgumentException("Fuel does not exist")
     }
     // Calculate price and format output
-    decimalPlaces.format((((target - target * vat) - tariff.StandingCharge.get) / fuelPrice) * 12)
+    decimalPlaces.format(
+      (((target - target * vat) - tariff.StandingCharge.get) / fuelPrice) * 12
+    )
   }
 
   /*
@@ -54,7 +62,7 @@ object TariffMatcher {
 
     // Define how to read the json into the Tariff case class
     implicit val tariffReads: Reads[Tariff] = (
-        (__ \ "tariff").read[String] and
+      (__ \ "tariff").read[String] and
         (__ \ "rates" \ "power").readNullable[Double] and
         (__ \ "rates" \ "gas").readNullable[Double] and
         (__ \ "standing_charge").readNullable[Double]
@@ -69,6 +77,8 @@ object TariffMatcher {
     }
     // TODO Add in more error handling
     // Convert the json to a list of Tariffs
-    json.validate[List[Tariff]].get
+    try {
+      json.validate[List[Tariff]].get
+    }
   }
 }
