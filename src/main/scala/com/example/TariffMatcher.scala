@@ -8,7 +8,7 @@ import play.api.libs.json._
 object TariffMatcher {
 
   val vat: Double = 0.05
-  val vatMultiplier: Double = 1.05
+  val vatMultiplier: Double = vat + 1
   val decimalPlaces: String = "%1.2f"
 
   /*
