@@ -1,3 +1,5 @@
+package com.example
+
 import org.scalatest.{FlatSpec, Matchers}
 
 class TariffMatcherTest extends FlatSpec with Matchers {
@@ -8,16 +10,6 @@ class TariffMatcherTest extends FlatSpec with Matchers {
     Tariff("greener-energy", Some(0.1544), None, Some(8.33)),
     Tariff("simpler-energy", Some(0.1396), Some(0.0328), Some(8.75))
   )
-
-  "main" should "return the cost of gas and power in order" in {
-    TariffMatcher.main(Array("cost", "2000", "2300"))
-  }
-  it should "return the amount of power used annually from a monthly spend" in {
-    TariffMatcher.main(Array("usage", "greener-energy", "power", "40"))
-  }
-  it should "return the amount of gas used annually from a monthly spend" in {
-    TariffMatcher.main(Array("usage", "better-energy", "gas", "25"))
-  }
 
   "calculateCost" should "return the cost of gas and power in order" in {
     val output: Map[String, String] = TariffMatcher.calculateCost(testTariffs, 2000.0, 2300.0)
