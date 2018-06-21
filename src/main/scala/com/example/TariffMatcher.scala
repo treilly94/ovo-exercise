@@ -1,19 +1,11 @@
+package com.example
+
 import java.io.FileInputStream
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-
 object TariffMatcher {
-  def main(args: Array[String]): Unit = {
-    // Read Tariffs from file
-    val tariffs = readJson("./src/main/resources/copy_of_prices.json")
-    args.head match {
-      case "cost" => calculateCost(tariffs, args(1).toDouble, args(2).toDouble).foreach(println)
-      case "usage" => println(calculateUsage(tariffs, args(1), args(2), args(3).toDouble))
-      case _ => println("improper command used")
-    }
-  }
 
   def calculateCost(tariffs: List[Tariff], pUsage: Double, gUsage: Double): Map[String, String] = {
     val newTariffs = (pUsage, gUsage) match {
@@ -65,8 +57,3 @@ object TariffMatcher {
 
   val vat: Double = 0.05
 }
-
-case class Tariff(Name: String,
-                  RatePower: Option[Double],
-                  RateGas: Option[Double],
-                  StandingCharge: Option[Double])
