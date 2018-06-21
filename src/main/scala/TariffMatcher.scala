@@ -20,7 +20,7 @@ object TariffMatcher {
       case (p, g) if p > 0.0 && g > 0.0 => tariffs.filter(t => t.RatePower.isDefined && t.RateGas.isDefined)
       case (p, g) if p > 0.0 => tariffs.filter(t => t.RatePower.isDefined) // Remove tariffs that don't supply power when needed
       case (p, g) if g > 0.0 => tariffs.filter(t => t.RateGas.isDefined) // Remove tariffs that don't supply gas when needed
-      case _ => tariffs
+      case _ => throw new IllegalArgumentException("pUsage and gUasge cant both be zero")
     }
     newTariffs
       .map(t =>
