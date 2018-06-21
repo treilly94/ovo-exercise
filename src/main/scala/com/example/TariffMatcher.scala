@@ -37,7 +37,11 @@ object TariffMatcher {
     // Get tariff details
     val tariff: Tariff = tariffs.filter(t => t.Name == name).head
     // Get price of fuel
-    val fuelPrice: Double = if (fuel == "power") tariff.RatePower.get else tariff.RateGas.get
+    val fuelPrice: Double = fuel match {
+      case "power" => tariff.RatePower.get
+      case "gas" => tariff.RateGas.get
+      case _ => throw new IllegalArgumentException("Fuel does not exist")
+    }
     // Calculate price and format output
     decimalPlaces.format((((target - tariff.StandingCharge.get) / fuelPrice) * 12) * vatMultiplier)
   }
