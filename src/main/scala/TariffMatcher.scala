@@ -11,15 +11,17 @@ object TariffMatcher {
     args.head match {
       case "cost" => calculateCost(tariffs, args(1).toDouble, args(2).toDouble) // for each print
       case "usage" => println(calculateUsage(tariffs, args(1), args(2), args(3).toDouble))
-      // Errors
+      case _ => println("improper command used")
     }
   }
 
   def calculateCost(tariffs: List[Tariff], pUsage: Double, gUsage: Double): Map[String, String] = {
-    // TODO Remove the var
-    var newTariffs = tariffs
-    if (pUsage > 0.0) newTariffs = newTariffs.filter(t => t.RatePower.isDefined) // Remove tariffs that don't supply power when needed
-    if (gUsage > 0.0) newTariffs = newTariffs.filter(t => t.RateGas.isDefined) // Remove tariffs that don't supply gas when needed
+    val newTariffs = (pUsage, gUsage) match {
+      case (p, g) if p > 0.0 && g > 0.0 => tariffs.filter(t => t.RatePower.isDefined && t.RateGas.isDefined)
+      case (p, g) if p > 0.0 => tariffs.filter(t => t.RatePower.isDefined) // Remove tariffs that don't supply power when needed
+      case (p, g) if g > 0.0 => tariffs.filter(t => t.RateGas.isDefined) // Remove tariffs that don't supply gas when needed
+      case _ => tariffs
+    }
     newTariffs
       .map(t =>
         t.Name -> "%1.2f".format(     // Map names to two decimal place formatted numbers
