@@ -10,6 +10,9 @@ object TariffMatcher {
   val vatMultiplier: Double = 1.05
   val decimalPlaces: String = "%1.2f"
 
+  /*
+      A method that calculates an annual cost inclusive of VAT for applicable tariffs, sorted by cheapest first.
+   */
   def calculateCost(tariffs: List[Tariff], pUsage: Double, gUsage: Double): Map[String, String] = {
     val newTariffs = (pUsage, gUsage) match {
       case (p, g) if p > 0.0 && g > 0.0 => tariffs.filter(t => t.RatePower.isDefined && t.RateGas.isDefined)
@@ -27,6 +30,9 @@ object TariffMatcher {
       .toMap // Convert to a map
   }
 
+  /*
+    Calculates how much energy (in kWh) would be used annually from a monthly spend in pounds
+   */
   def calculateUsage(tariffs: List[Tariff], name: String, fuel: String, target: Double): String = {
     // Get tariff details
     val tariff: Tariff = tariffs.filter(t => t.Name == name).head
@@ -36,6 +42,9 @@ object TariffMatcher {
     decimalPlaces.format((((target - tariff.StandingCharge.get) / fuelPrice) * 12) * vatMultiplier)
   }
 
+  /*
+    Reads the tariffs from the json file into the Tariff case class
+   */
   def readJson(path: String): List[Tariff] = {
 
     // Define how to read the json into the Tariff case class
