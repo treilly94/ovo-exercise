@@ -27,10 +27,10 @@ object TariffMatcher {
       .map(t =>
         t.Name -> decimalPlaces.format( // Map names to two decimal place formatted numbers
           (
-            (t.RatePower.getOrElse(0.0) * pUsage) +
-              (t.RateGas.getOrElse(0.0) * gUsage) +
-              (t.StandingCharge.getOrElse(0.0) * 12)
-            ) * vatMultiplier
+            (t.RatePower.getOrElse(0.0) * pUsage) + // Get cost of power
+              (t.RateGas.getOrElse(0.0) * gUsage) + // Add cost of gas
+              (t.StandingCharge.getOrElse(0.0) * 12) // Add standing charge for year
+            ) * vatMultiplier // Add vat
         )
       )
       .sortBy(_._2) // Sort by the values
@@ -51,7 +51,10 @@ object TariffMatcher {
     }
     // Calculate price and format output
     decimalPlaces.format(
-      (((target - target * vat) - tariff.StandingCharge.get) / fuelPrice) * 12
+      (((target - target * vat) // Get target without vat
+        - tariff.StandingCharge.get) // remove the standing charge
+        / fuelPrice) // Divide by the fuel price
+        * 12 // Calculate the annual value
     )
   }
 
