@@ -78,8 +78,12 @@ object TariffMatcher {
     } finally {
       stream.close()
     }
-    // TODO Add in more error handling
     // Convert the json to a list of Tariffs
-    json.validate[List[Tariff]].get
+    try {
+      json.validate[List[Tariff]].get
+    }
+    catch {
+      case _: Throwable => throw new Exception("Json failed to validate")
+    }
   }
 }
