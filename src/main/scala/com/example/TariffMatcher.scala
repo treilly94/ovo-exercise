@@ -7,6 +7,9 @@ import play.api.libs.json._
 
 object TariffMatcher {
 
+  val vat: Double = 0.05
+  val decimalPlaces: String = "%1.2f"
+
   def calculateCost(tariffs: List[Tariff], pUsage: Double, gUsage: Double): Map[String, String] = {
     val newTariffs = (pUsage, gUsage) match {
       case (p, g) if p > 0.0 && g > 0.0 => tariffs.filter(t => t.RatePower.isDefined && t.RateGas.isDefined)
@@ -16,10 +19,10 @@ object TariffMatcher {
     }
     newTariffs
       .map(t =>
-        t.Name -> "%1.2f".format(     // Map names to two decimal place formatted numbers
+        t.Name -> decimalPlaces.format( // Map names to two decimal place formatted numbers
           (t.RatePower.getOrElse(0.0) * pUsage) + (t.RateGas.getOrElse(0.0) * gUsage) + (t.StandingCharge.getOrElse(0.0) * 12)
         )
-    )
+      )
       .sortBy(_._2) // Sort by the values
       .toMap // Convert to a map
   }
@@ -30,7 +33,7 @@ object TariffMatcher {
     // Get price of fuel
     val fuelPrice: Double = if (fuel == "power") tariff.RatePower.get else tariff.RateGas.get
     // Calculate price and format output
-    "%1.2f".format(((target - tariff.StandingCharge.get) / fuelPrice) * 12)
+    decimalPlaces.format(((target - tariff.StandingCharge.get) / fuelPrice) * 12)
   }
 
   def readJson(path: String): List[Tariff] = {
@@ -54,6 +57,4 @@ object TariffMatcher {
     // Convert the json to a list of Tariffs
     json.validate[List[Tariff]].get
   }
-
-  val vat: Double = 0.05
 }
