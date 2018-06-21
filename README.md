@@ -3,7 +3,7 @@
 ## Requirements
 This project requires:
 * Java 8
-* Scala
+* Scala - version 2.12.6 was used in this project
 * sbt
 
 ## Running the application
